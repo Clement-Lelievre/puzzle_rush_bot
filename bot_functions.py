@@ -31,12 +31,16 @@ def get_chessdotcom_board_desc(soup):
                 item.reverse()
         except:
             continue
-    raw_content = [' '.join(item) for item in raw_content if 'highlight' not in item]
+    raw_content = [' '.join(item) for item in raw_content if 'highlight' not in item and 'hover' not in item]
     board_desc = [item for item in chesscom_board_desc if len(item) == 2]
     return board_desc, raw_content # the len() thing is because the highlighted squares from the last move appear even without pieces on it
     
 def is_black_turn(soup):
-    return not not list(soup.find(class_ = 'board flipped'))
+    try:
+        return not not list(soup.find(class_ = 'board flipped'))
+    except:
+        return False
+
 
 def chessdotcom_board_to_fen(board_desc, soup):
     '''Receives a chess board description as is currently (May 2021) used by chess.com in the puzzle rush page HTML, 
@@ -52,7 +56,7 @@ def chessdotcom_board_to_fen(board_desc, soup):
     return board.fen()
    
 
-def engine_best_move(engine, fen, time = 0.01):
+def engine_best_move(engine, fen, time = 0.1):
     '''input: a FEN / output: the best move in the position according to Stockfish 13's neural network under the given time constraint (in ms)'''
     board = chess.Board(fen)
     info = engine.analyse(board, chess.engine.Limit(time=time))

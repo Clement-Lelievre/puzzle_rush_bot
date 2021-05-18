@@ -93,53 +93,65 @@ with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:
         play_button = driver.find_element_by_class_name('ui_v5-button-component.ui_v5-button-primary.ui_v5-button-large.ui_v5-button-full')
         play_button.click()
         sleep(6)    # wait for the 3 countdown seconds + time for the first move being played
-        html = driver.page_source
-        soup = BeautifulSoup(html, 'html.parser')
-        board_desc, raw_content = get_chessdotcom_board_desc(soup)
-        print('Got board desc', board_desc)
-        fen = chessdotcom_board_to_fen(board_desc, soup)
-        print(f'Current fen is: {fen}')
-        best_move = str(engine_best_move(engine, fen))
-        best_move_start_square = squares_dict[best_move[:2]]
-        print(f'Best move is {best_move}')
-        print('\nraw content is',raw_content)
-        for item in raw_content:
-            if best_move_start_square in item:
-                startsquare = driver.find_element_by_class_name(item.replace(' ','.'))
-                startsquare.click()
-                break
-        best_move_destination_square = squares_dict[best_move[2:]]
-        for item in raw_content:
-            if best_move_destination_square in item:
-                try:
-                    endsquare = driver.find_element_by_class_name('hint ' + best_move_destination_square)
-                    endsquare.click()
-                    break
-                except:
-                    pass
-                try:
-                    endsquare = driver.find_element_by_class_name('capture-hint ' + best_move_destination_square)
-                    endsquare.click()
-                    break
-                except:
-                    pass
-                try:
-                    endsquare = driver.find_element_by_class_name(item.replace(' ','.'))
-                    endsquare.click()
-                    break
-                except:
-                    pass
-        
-        
+        try:
+            a = driver.find_element_by_class_name('wrapper svelte-362hqn')
+            a.click()
+            print('removed the cookies banner successfully')
+        except:
+            pass
 
-        
-        
+        ########## DONE SETTING UP EVERYTHING, NOW THE PUZZLE RUSH BEGINS ###################
+        while True:
+            html = driver.page_source
+            soup = BeautifulSoup(html, 'html.parser')
+            board_desc, raw_content = get_chessdotcom_board_desc(soup)
+            #print('Got board desc', board_desc)
+            fen = chessdotcom_board_to_fen(board_desc, soup)
+            #print(f'Current fen is: {fen}')
+            best_move = str(engine_best_move(engine, fen))
+            #print(f'Best move is {best_move}')
+            best_move_start_square = squares_dict[best_move[:2]]
+            #print('\nraw content is',raw_content)
+            for item in raw_content:
+                if best_move_start_square in item:
+                    startsquare = driver.find_element_by_class_name(item.replace(' ','.'))
+                    startsquare.click()
+                    break
+            best_move_destination_square = squares_dict[best_move[2:]]
+            for item in raw_content:
+                if best_move_destination_square in item:
+                    print(item)
+                    try:
+                        endsquare = driver.find_element_by_class_name('hint ' + best_move_destination_square)
+                        endsquare.click()
+                        print('hey')
+                        break
+                    except:
+                        pass
+            for item in raw_content:
+                if best_move_destination_square in item:
+                    try:
+                        endsquare = driver.find_element_by_class_name('capture-hint ' + best_move_destination_square)
+                        endsquare.click()
+                        print('ho')
+                        break
+                    except:
+                        pass
+            for item in raw_content:
+                if best_move_destination_square in item:
+                    try:
+                        endsquare = driver.find_element_by_class_name(item.replace(' ','.'))
+                        endsquare.click()
+                        print('ha')
+                        break
+                    except:
+                        pass
     except Exception as e:
         print(f'Error encountered: {e}')
 
-
-# driver.save_screenshot(screenshot_name)
-# now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-# screenshot_name = f'scores_screenshots/{now}.png'
+sleep(15)
+now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+screenshot_name = f'scores_screenshots/{now}.png'
+driver.save_screenshot(screenshot_name)
 #driver.quit()
 
