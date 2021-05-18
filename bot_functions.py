@@ -1,6 +1,8 @@
 import chess
 import chess.engine
 
+color_dict = {'w':True, 'b':False}
+type_dict = {'p':1,'n':2,'b':3,'r':4,'q':5,'k':6}
 
 def get_squares_dict():
     '''Creates a dictionary where the conversion is made between Stockfish square notation and chessdotcom HTML square notation'''
@@ -9,22 +11,52 @@ def get_squares_dict():
     for row in range(1,9):
         for letter in columns:
             squares_dict[letter + str(row)] = 'square-' + str(columns.index(letter)+1) + str(row)
-    return squares_dict
+    l = list(squares_dict.values())
+    return squares_dict, l
 
-squares_dict = get_squares_dict()
+squares_dict, l  = get_squares_dict()
 
-def chessdotcom_board_to_fen(board_desc):
+
+def get_chessdotcom_board_desc(soup):
+    '''Scrapes the HTML content of the puzzle rush current page, and returns the board position (which pieces on which squares)'''
+    chesscom_board_desc = []
+    raw_content = []
+    for item in soup.find_all(id='board-board'):
+        for stuff in item.find_all('div'):
+            chesscom_board_desc.append(stuff['class'][1:])
+            raw_content.append(stuff['class'])
+    for item in chesscom_board_desc:
+        try:
+            if 'square' in item[1]:
+                item.reverse()
+        except:
+            continue
+    raw_content = [' '.join(item) for item in raw_content if 'highlight' not in item]
+    board_desc = [item for item in chesscom_board_desc if len(item) == 2]
+    return board_desc, raw_content # the len() thing is because the highlighted squares from the last move appear even without pieces on it
+    
+def is_black_turn(soup):
+    return not not list(soup.find(class_ = 'board flipped'))
+
+def chessdotcom_board_to_fen(board_desc, soup):
     '''Receives a chess board description as is currently (May 2021) used by chess.com in the puzzle rush page HTML, 
-    and processes it to return a FEN of the position'''
-    board = chess.Board().clear_board()
-    for square, piece in board_desc.items():
-        board.set_piece_at(square, piece)
+    and processes it to setup the position on Stockfish'''
+    board = chess.Board(fen=None) # creating an empty board
+    for item in board_desc:
+        piece = chess.Piece(type_dict[item[1][1]], color_dict[item[1][0]])
+        board.set_piece_at(l.index(item[0]) , piece)
+    if is_black_turn(soup): # determines the side to move by looking at presence or not of "flipped board"
+        board.turn = False
+    else:
+        board.turn = True
     return board.fen()
    
 
-
-def engine_best_move(engine, fen : str, time = 0.01) -> str:
+def engine_best_move(engine, fen, time = 0.01):
     '''input: a FEN / output: the best move in the position according to Stockfish 13's neural network under the given time constraint (in ms)'''
     board = chess.Board(fen)
     info = engine.analyse(board, chess.engine.Limit(time=time))
     return info["pv"][0]
+
+
+

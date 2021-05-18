@@ -6,7 +6,6 @@ import chess
 import chess.engine
 
 # browser related imports
-
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -17,11 +16,11 @@ from time import *
 import datetime
 
 ###########################################################################################################################
-"This Python file opens a browser (Firefox) page to chess.com's puzzle rush page, logs in and plays the game."
+"This Python file opens a browser (Firefox) page to chess.com's puzzle rush page, logs in and solves puzzles"
 
 # defining a few variables that'll be needed thereafter
-email = 'zeiejkejezezez@gmail.com'
-password = 'akjankajna' # TO DO: make it hidden
+email = 'fkjfs55ds5ds@gmail.com'
+password = 'dkdhkdsjhkdsjhdsds654564' # TO DO: make it hidden
 
 with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:  # initiating a chess engine (Stockfish 13)
     try:
@@ -42,7 +41,8 @@ with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:
         for cross in banner:
             cross.click()
         driver.get("https://www.chess.com/puzzles/rush")
-        sleep(3)
+        sleep(7)
+        # now a few precautions to remove potential annoying banners or pop-ups:
         annoying_banner = driver.find_elements_by_class_name('icon-font-chess x')
         for item in annoying_banner:
             try:
@@ -50,8 +50,12 @@ with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:
             except:
                 continue
         try:
-            bg = driver.find_element_by_class_name('core-modal-background')
-            bg.click()
+            bg = driver.find_elements_by_class_name('core-modal-background')
+            for item in bg:
+                try:
+                    item.click()
+                except:
+                    continue
         except:
             pass
         try:
@@ -59,30 +63,60 @@ with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:
             a.click()
         except:
             pass
+        try:
+            a = driver.find_elements_by_class_name('icon-font-chess x ui_outside-close-icon')
+            for item in a:
+                try:
+                    item.click()
+                except:
+                    continue
+        except:
+            pass
+        try:
+            a = driver.find_elements_by_class_name('icon-font-chess x')
+            for item in a:
+                item.click()
+        except:
+            pass
+        try:
+            a = driver.find_element_by_class_name('core-modal-background')
+            a.click()
+        except:
+            pass
         play_button = driver.find_element_by_class_name('ui_v5-button-component.ui_v5-button-primary.ui_v5-button-large.ui_v5-button-full')
         play_button.click()
-        sleep(3)
+        sleep(6)    # wait for the 3 countdown seconds + time for the first move being played
         html = driver.page_source
         soup = BeautifulSoup(html, 'html.parser')
-        chesscom_board_desc = []
-        for item in soup.find_all(id='board-board'):
-            for stuff in item.find_all('div'):
-                chesscom_board_desc.append(stuff['class'])
-        print(chesscom_board_desc)
+        board_desc, raw_content = get_chessdotcom_board_desc(soup)
+        #print('Got board desc', board_desc)
+        fen = chessdotcom_board_to_fen(board_desc, soup)
+        #print(f'Current fen is: {fen}')
+        best_move = str(engine_best_move(engine, fen))
+        best_move_start_square = squares_dict[best_move[:2]]
+        print(f'Best move is {best_move}')
+        for item in raw_content:
+            if best_move_start_square in item:
+                startsquare = driver.find_element_by_class_name(item)
+                startsquare.click()
+                break
+        best_move_destination_square = squares_dict[best_move[2:]]
+        for item in raw_content:
+            if best_move_destination_square in item:
+                endsquare = driver.find_element_by_class_name(item)
+                endsquare.click()
+                break
         
-        # fen = chessdotcom_board_to_fen(board_desc)
-        #best_move = engine_best_move(engine, fen)
-        # best_move_start_square = best_move[:2]
-        # best_move_destination_square = best_move[2:]
+        
 
-        # driver.save_screenshot(screenshot_name)
-        # now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-        # screenshot_name = f'scores_screenshots/{now}.png'
+        
         
     except Exception as e:
-        print(e)
+        print(f'Error encountered: {e}')
 
 
-
+# driver.save_screenshot(screenshot_name)
+# now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+# screenshot_name = f'scores_screenshots/{now}.png'
 #driver.quit()
 
