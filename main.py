@@ -19,8 +19,8 @@ import datetime
 "This Python file opens a browser (Firefox) page to chess.com's puzzle rush page, logs in and solves puzzles"
 
 # defining a few variables that'll be needed thereafter
-email = 'fkjfs55ds5ds@gmail.com'
-password = 'dkdhkdsjhkdsjhdsds654564' # TO DO: make it hidden
+email = 'kjdnkjfnsjsdnjkjddds685454@gmail.com'
+password = 'dfkjhfkjfdhfddfkjfdkjf646845' # TO DO: make it hidden
 
 with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:  # initiating a chess engine (Stockfish 13)
     try:
@@ -48,7 +48,7 @@ with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:
             try:
                 item.click() 
             except:
-                continue
+                pass
         try:
             bg = driver.find_elements_by_class_name('core-modal-background')
             for item in bg:
@@ -75,12 +75,19 @@ with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:
         try:
             a = driver.find_elements_by_class_name('icon-font-chess x')
             for item in a:
-                item.click()
+                try:
+                    item.click()
+                except:
+                    continue
         except:
             pass
         try:
-            a = driver.find_element_by_class_name('core-modal-background')
-            a.click()
+            a = driver.find_elements_by_class_name('core-modal-background')
+            for item in a:
+                try:
+                    a.click()
+                except:
+                    continue
         except:
             pass
         play_button = driver.find_element_by_class_name('ui_v5-button-component.ui_v5-button-primary.ui_v5-button-large.ui_v5-button-full')
@@ -89,23 +96,39 @@ with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:
         html = driver.page_source
         soup = BeautifulSoup(html, 'html.parser')
         board_desc, raw_content = get_chessdotcom_board_desc(soup)
-        #print('Got board desc', board_desc)
+        print('Got board desc', board_desc)
         fen = chessdotcom_board_to_fen(board_desc, soup)
-        #print(f'Current fen is: {fen}')
+        print(f'Current fen is: {fen}')
         best_move = str(engine_best_move(engine, fen))
         best_move_start_square = squares_dict[best_move[:2]]
         print(f'Best move is {best_move}')
+        print('\nraw content is',raw_content)
         for item in raw_content:
             if best_move_start_square in item:
-                startsquare = driver.find_element_by_class_name(item)
+                startsquare = driver.find_element_by_class_name(item.replace(' ','.'))
                 startsquare.click()
                 break
         best_move_destination_square = squares_dict[best_move[2:]]
         for item in raw_content:
             if best_move_destination_square in item:
-                endsquare = driver.find_element_by_class_name(item)
-                endsquare.click()
-                break
+                try:
+                    endsquare = driver.find_element_by_class_name('hint ' + best_move_destination_square)
+                    endsquare.click()
+                    break
+                except:
+                    pass
+                try:
+                    endsquare = driver.find_element_by_class_name('capture-hint ' + best_move_destination_square)
+                    endsquare.click()
+                    break
+                except:
+                    pass
+                try:
+                    endsquare = driver.find_element_by_class_name(item.replace(' ','.'))
+                    endsquare.click()
+                    break
+                except:
+                    pass
         
         
 
