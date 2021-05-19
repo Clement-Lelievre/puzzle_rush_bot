@@ -17,3 +17,5 @@ Warnings:
 
 - some of the clicks are not robust: while clicking on "Log in" and "Play" buttons is done via selenium (so, it is robust in the sense that it uses the HTML), clicking on the squares while making a move is done via pyautogui, because playing the move by clicking via selenium was too inconvenient.
 Hence, this program is calibrated for a specific screen size (1920,1080). If your screen size is different, you need to adapt the coordinates of the points that are clicked (the squares) in main.py
+
+- you cannot try accelerating the program by reducing the time.sleep() as this will induce "engine process died unexpectedly (exit code: 3221225477)"
