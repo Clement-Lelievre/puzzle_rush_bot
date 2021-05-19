@@ -1,7 +1,25 @@
 # My puzzle-rush bot
 ![](https://github.com/Clement-Lelievre/puzzle_rush_bot/blob/main/scores_screenshots/2021-05-19_12-56-23.png)   
 
-A bot coded in python that plays puzzle rush on chess.com. There is still much room for improvement as this is only a first version.
+A bot coded in Python that plays puzzle rush on chess.com.
+
+It performs the following actions:
+-opens a browser (Firefox)
+-visits chess.com, removes annoying banners then logs in (you need your own credentials)
+-visits the puzzle rush page and clicks "Play"
+-cracks puzzles one after the other* (sometimes it might fail a problem)
+-once the 5 minutes countdown elapsed or if game aborted due 3 failures, takes a screenshot of its score and saves it locally in the appropriate folder
+
+*Here is how it proceeds:
+It loops over the following workflow:
+-parses the HTML in order to get which pieces are on which squares (it disregards castling and en passant rights at this stage; I might add this later) => selenium
+-processes that information (make a FEN) to convert it to Stockfish lingo => ad hoc functions
+-passes the position FEN description to the Stockfish neural network, which in turn provides its best move => python-chess and ad hoc functions
+-this best move is defined as a start and end square, hence pyautogui is used to click on these in order to actually complete the move
+-repeats till game is over
+
+
+There is still much room for improvement as this is only a first version.
 
 OS: Windows 10
 Launched via Powershell.
