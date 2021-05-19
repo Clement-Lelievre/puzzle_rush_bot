@@ -31,17 +31,17 @@ There is still much room for improvement as this is only a first version. For ex
 
 ## Files and directories
 
-The main file is obvisouly main.py => just run *python main.py*
-bot_functions.py contains all the tailored functions that I created
-stockfish_13_win_x64_avx2.exe is the chess engine
-scores_screenshots is the directory where screenshots of scores are saved
+- The main file is obvisouly main.py => just run *python main.py*
+- bot_functions.py contains all the tailored functions that I created
+- stockfish_13_win_x64_avx2.exe is the chess engine
+- scores_screenshots is the directory where screenshots of scores are saved
 
 ## Steps required to install the project
 
 - the firefox driver for Selenium (this requires to add Geckodriver to PATH) (or any compatible browser of your choice)
 - the stockfish engine executable (to be placed in the same directory as the main Python file)
 
-Warnings: 
+## Warnings: 
 - you may have to disable manually the cookies-related banner at the bottom of the page else clicks due to happen on the first rank will fail; moreover disable the squares highlighting and legal moves highlighting (else, parsing the HTML may fail.). Leave the coordinates inside board and set animation type to FAST.
 
 - The program does not account yet for underpromotions, castling or en passant rights but can still solve most puzzles. 
