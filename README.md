@@ -1,4 +1,6 @@
-# puzzle_rush_bot
+# My puzzle-rush bot
+![](https://github.com/Clement-Lelievre/puzzle_rush_bot/blob/main/scores_screenshots/2021-05-19_12-56-23.png)   
+
 A bot coded in python that plays puzzle rush on chess.com.
 
 OS: Windows 10
