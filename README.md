@@ -1,6 +1,8 @@
 # My puzzle-rush bot
 ![](https://github.com/Clement-Lelievre/puzzle_rush_bot/blob/main/scores_screenshots/2021-05-19_12-56-23.png)   
 
+## Description 
+
 A bot coded in Python that plays puzzle rush on chess.com.
 
 It performs the following actions:
@@ -23,13 +25,20 @@ There were several challenges, including:
 - find the relevant piece and square data in the HTML and convert that into Stockfish-digestible language
 - finetune the waiting times so as to maximize speed while preventing any crashes
 
-There is still much room for improvement as this is only a first version.
-
 OS: Windows 10
 Launched via Powershell.
+There is still much room for improvement as this is only a first version. For example, using waittillelement...in selenium would be better than time.sleep().
 
-It uses:
-- the firefox driver for Selenium (this requires to add Geckodriver to PATH) 
+## Files and directories
+
+The main file is obvisouly main.py => just run *python main.py*
+bot_functions.py contains all the tailored functions that I created
+stockfish_13_win_x64_avx2.exe is the chess engine
+scores_screenshots is the directory where screenshots of scores are saved
+
+## Steps required to install the project
+
+- the firefox driver for Selenium (this requires to add Geckodriver to PATH) (or any compatible browser of your choice)
 - the stockfish engine executable (to be placed in the same directory as the main Python file)
 
 Warnings: 
@@ -43,3 +52,7 @@ Hence, this program is calibrated for a specific screen size (1920,1080). If you
 - you cannot try accelerating the program by reducing the time.sleep() as this will induce "engine process died unexpectedly (exit code: 3221225477)"
 
 Please use this program responsibly and respect chess.com terms of use.
+
+## Credits
+
+I obvisouly did not code a chess engine myself... Kudos to the Stockfish team.
