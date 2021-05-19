@@ -12,7 +12,7 @@ It performs the following actions:
 - cracks puzzles one after the other* (sometimes it might fail a problem)
 - once the 5 minutes countdown elapsed or if game aborted due 3 failures, takes a screenshot of its score and saves it locally in the appropriate folder
 
-* Here is how it proceeds:
+## * Here is how it proceeds to solve puzzles:
 It loops over the following workflow:
 -parses the HTML in order to get which pieces are on which squares (it disregards castling and en passant rights at this stage; I might add this later) => selenium & beautiful soup
 -processes that information (make a FEN) to convert it to Stockfish lingo => ad hoc functions
