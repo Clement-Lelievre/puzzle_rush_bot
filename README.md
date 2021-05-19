@@ -8,7 +8,7 @@ Launched via Powershell.
 
 It uses:
 - the firefox driver for Selenium (this requires to add Geckodriver to PATH) 
-- the stockfish engine (to be placed in the same directory as the main Python file)
+- the stockfish engine executable (to be placed in the same directory as the main Python file)
 
 Warning: you may have to disable manually the cookies-related banner at the bottom of the page else clicks due to happen on the first rank will fail; moreover disable the squares highlighting and legal moves highlighting (else, parsing the HTML may fail.) 
 
