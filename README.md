@@ -11,7 +11,7 @@ It uses:
 - the stockfish engine executable (to be placed in the same directory as the main Python file)
 
 Warnings: 
-- you may have to disable manually the cookies-related banner at the bottom of the page else clicks due to happen on the first rank will fail; moreover disable the squares highlighting and legal moves highlighting (else, parsing the HTML may fail.). Leave the coordinates inside board.
+- you may have to disable manually the cookies-related banner at the bottom of the page else clicks due to happen on the first rank will fail; moreover disable the squares highlighting and legal moves highlighting (else, parsing the HTML may fail.). Leave the coordinates inside board and set animation type to FAST.
 
 - The program does not account yet for underpromotions, castling or en passant rights but can still solve most puzzles. 
 
