@@ -19,3 +19,5 @@ Warnings:
 Hence, this program is calibrated for a specific screen size (1920,1080). If your screen size is different, you need to adapt the coordinates of the points that are clicked (the squares) in main.py
 
 - you cannot try accelerating the program by reducing the time.sleep() as this will induce "engine process died unexpectedly (exit code: 3221225477)"
+
+Please use this program responsibly and respect chess.com terms of use.
