@@ -14,11 +14,11 @@ It performs the following actions:
 
 ## * Here is how it proceeds to solve puzzles:
 It loops over the following workflow:
--parses the HTML in order to get which pieces are on which squares (it disregards castling and en passant rights at this stage; I might add this later) => selenium & beautiful soup
--processes that information (make a FEN) to convert it to Stockfish lingo => ad hoc functions
--passes the position FEN description to the Stockfish neural network, which in turn provides its best move => python-chess and ad hoc functions
--this best move is defined as a start and end square, hence pyautogui is used to click on these in order to actually complete the move
--repeats till game is over
+- parses the HTML in order to get which pieces are on which squares (it disregards castling and en passant rights at this stage; I might add this later) => selenium & beautiful soup
+- processes that information (make a FEN) to convert it to Stockfish lingo => ad hoc functions
+- passes the position FEN description to the Stockfish neural network, which in turn provides its best move => python-chess and ad hoc functions
+- this best move is defined as a start and end square, hence pyautogui is used to click on these in order to actually complete the move
+- repeats till game is over
 
 There were several challenges, including:
 - removing the annoying banners
