@@ -20,8 +20,8 @@ import datetime
 "This Python file opens a browser (Firefox) page to chess.com's puzzle rush page, logs in and solves puzzles"
 
 # defining a few variables that'll be needed thereafter
-email = 'dfilchelrcfhercerhcer@gmail.com'
-password = 'ekhjkehjfehfkjf' # TO DO: make it hidden
+email = 'dsiudhusdhdsds64545@gmail.com'
+password = 'dkshdkjdshdjdhs' # TO DO: make it hidden
 
 with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:  # initiating a chess engine (Stockfish 13)
     try:
