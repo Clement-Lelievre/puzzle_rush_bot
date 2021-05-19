@@ -11,6 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
+import pyautogui # for mouse clicking
 
 from time import *
 import datetime
@@ -36,12 +37,12 @@ with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:
         pwd.send_keys(password)
         log = driver.find_element_by_id('login')
         log.click()
-        sleep(2)
+        sleep(1)
         banner = driver.find_elements_by_class_name("icon-font-chess x")
         for cross in banner:
             cross.click()
         driver.get("https://www.chess.com/puzzles/rush")
-        sleep(7)
+        sleep(1)
         # now a few precautions to remove potential annoying banners or pop-ups:
         annoying_banner = driver.find_elements_by_class_name('icon-font-chess x')
         for item in annoying_banner:
@@ -92,7 +93,7 @@ with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:
             pass
         play_button = driver.find_element_by_class_name('ui_v5-button-component.ui_v5-button-primary.ui_v5-button-large.ui_v5-button-full')
         play_button.click()
-        sleep(6)    # wait for the 3 countdown seconds + time for the first move being played
+        sleep(5)    # wait for the 3 countdown seconds + time for the first move being played
         try:
             a = driver.find_element_by_class_name('wrapper svelte-362hqn')
             a.click()
@@ -109,43 +110,56 @@ with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:
             fen = chessdotcom_board_to_fen(board_desc, soup)
             #print(f'Current fen is: {fen}')
             best_move = str(engine_best_move(engine, fen))
+
             #print(f'Best move is {best_move}')
-            best_move_start_square = squares_dict[best_move[:2]]
+            
+            best_move_start_square = squares_dict[best_move[:4][:2]][-2:]
+            best_move_destination_square = squares_dict[best_move[:4][2:]][-2:]
+            if is_black_turn(soup): # board is flipped, so I need to adapt the coordinates that I pass to pyautogui.click()
+                best_move_start_square = str( 9 - int(best_move_start_square[0])) + str( 9 - int(best_move_start_square[1]))
+                best_move_destination_square = str( 9 - int(best_move_destination_square[0])) + str( 9 - int(best_move_destination_square[1]))
+
+            pyautogui.click( 262 + 130*(int(best_move_start_square[0])-1) , 87 + 130*8 - 130*(int(best_move_start_square[1])) )
+            pyautogui.click( 262 + 130*(int(best_move_destination_square[0])-1) , 87 + 130*8 - 130*(int(best_move_destination_square[1])) )
+            if len(best_move) > 4 :
+                pyautogui.click( 262 + 130*(int(best_move_destination_square[0])-1) , 87 + 130*8 - 130*(int(best_move_destination_square[1])) )
+            sleep(1)
             #print('\nraw content is',raw_content)
-            for item in raw_content:
-                if best_move_start_square in item:
-                    startsquare = driver.find_element_by_class_name(item.replace(' ','.'))
-                    startsquare.click()
-                    break
-            best_move_destination_square = squares_dict[best_move[2:]]
-            for item in raw_content:
-                if best_move_destination_square in item:
-                    print(item)
-                    try:
-                        endsquare = driver.find_element_by_class_name('hint ' + best_move_destination_square)
-                        endsquare.click()
-                        print('hey')
-                        break
-                    except:
-                        pass
-            for item in raw_content:
-                if best_move_destination_square in item:
-                    try:
-                        endsquare = driver.find_element_by_class_name('capture-hint ' + best_move_destination_square)
-                        endsquare.click()
-                        print('ho')
-                        break
-                    except:
-                        pass
-            for item in raw_content:
-                if best_move_destination_square in item:
-                    try:
-                        endsquare = driver.find_element_by_class_name(item.replace(' ','.'))
-                        endsquare.click()
-                        print('ha')
-                        break
-                    except:
-                        pass
+
+            # for item in raw_content:
+            #     if best_move_start_square in item:
+            #         startsquare = driver.find_element_by_class_name(item.replace(' ','.'))
+            #         startsquare.click()
+            #         break
+                
+            
+
+            # print('destination square is', best_move_destination_square)
+            # for item in raw_content:
+            #     if best_move_destination_square in item:
+            #         print(item)
+            #         try:
+            #             endsquare = driver.find_element_by_class_name('hint ' + best_move_destination_square)
+            #             endsquare.click()
+            #             break
+            #         except:
+            #             pass
+            # for item in raw_content:
+            #     if best_move_destination_square in item:
+            #         try:
+            #             endsquare = driver.find_element_by_class_name('capture-hint ' + best_move_destination_square)
+            #             endsquare.click()
+            #             break
+            #         except:
+            #             pass
+            # for item in raw_content:
+            #     if best_move_destination_square in item:
+            #         try:
+            #             endsquare = driver.find_element_by_class_name(item.replace(' ','.'))
+            #             endsquare.click()
+            #             break
+            #         except:
+            #             pass
     except Exception as e:
         print(f'Error encountered: {e}')
 
