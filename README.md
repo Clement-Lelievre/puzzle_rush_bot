@@ -10,14 +10,18 @@ It performs the following actions:
 -cracks puzzles one after the other* (sometimes it might fail a problem)
 -once the 5 minutes countdown elapsed or if game aborted due 3 failures, takes a screenshot of its score and saves it locally in the appropriate folder
 
-**Here is how it proceeds:*
+* Here is how it proceeds:
 It loops over the following workflow:
--parses the HTML in order to get which pieces are on which squares (it disregards castling and en passant rights at this stage; I might add this later) => selenium
+-parses the HTML in order to get which pieces are on which squares (it disregards castling and en passant rights at this stage; I might add this later) => selenium & beautiful soup
 -processes that information (make a FEN) to convert it to Stockfish lingo => ad hoc functions
 -passes the position FEN description to the Stockfish neural network, which in turn provides its best move => python-chess and ad hoc functions
 -this best move is defined as a start and end square, hence pyautogui is used to click on these in order to actually complete the move
 -repeats till game is over
 
+There were several challenges, including:
+- removing the annoying banners
+- find the relevant piece and square data in the HTML and convert that into Stockfish-digestible language
+- finetune the waiting times so as to maximize speed while preventing any crashes
 
 There is still much room for improvement as this is only a first version.
 
