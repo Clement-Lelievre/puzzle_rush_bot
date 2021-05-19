@@ -6,11 +6,11 @@
 A bot coded in Python that plays puzzle rush on chess.com.
 
 It performs the following actions:
--opens a browser (Firefox)
--visits chess.com, removes annoying banners then logs in (you need your own credentials)
--visits the puzzle rush page and clicks "Play"
--cracks puzzles one after the other* (sometimes it might fail a problem)
--once the 5 minutes countdown elapsed or if game aborted due 3 failures, takes a screenshot of its score and saves it locally in the appropriate folder
+- opens a browser (Firefox)
+- visits chess.com, removes annoying banners then logs in (you need your own credentials)
+- visits the puzzle rush page and clicks "Play"
+- cracks puzzles one after the other* (sometimes it might fail a problem)
+- once the 5 minutes countdown elapsed or if game aborted due 3 failures, takes a screenshot of its score and saves it locally in the appropriate folder
 
 * Here is how it proceeds:
 It loops over the following workflow:
