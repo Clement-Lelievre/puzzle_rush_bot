@@ -20,8 +20,8 @@ import datetime
 "This Python file opens a browser (Firefox) page to chess.com's puzzle rush page, logs in and solves puzzles"
 
 # defining a few variables that'll be needed thereafter
-email = 'kjdnkjfnsjsdnjkjddds685454@gmail.com'
-password = 'dfkjhfkjfdhfddfkjfdkjf646845' # TO DO: make it hidden
+email = 'dfilchelrcfhercerhcer@gmail.com'
+password = 'ekhjkehjfehfkjf' # TO DO: make it hidden
 
 with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:  # initiating a chess engine (Stockfish 13)
     try:
@@ -91,9 +91,11 @@ with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:
                     continue
         except:
             pass
+        sleep(5) # this leaves time for a human to click potential banners
         play_button = driver.find_element_by_class_name('ui_v5-button-component.ui_v5-button-primary.ui_v5-button-large.ui_v5-button-full')
         play_button.click()
-        sleep(5)    # wait for the 3 countdown seconds + time for the first move being played
+        time_start = time()
+        sleep(4)    # wait for the 3 countdown seconds + time for the first move being played
         try:
             a = driver.find_element_by_class_name('wrapper svelte-362hqn')
             a.click()
@@ -102,70 +104,38 @@ with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:
             pass
 
         ########## DONE SETTING UP EVERYTHING, NOW THE PUZZLE RUSH BEGINS ###################
-        while True:
+        html = driver.page_source
+        soup = BeautifulSoup(html, 'html.parser')
+        time_now = time()
+        time_elapsed = time_now - time_start
+        while time_elapsed < 305: # puzzle rush lasts 5 min so I took just beyond 5min*60sec. A cleaner, more robust way to loop would be to parse the HTML and detect the end of the rush
             html = driver.page_source
             soup = BeautifulSoup(html, 'html.parser')
-            board_desc, raw_content = get_chessdotcom_board_desc(soup)
+            board_desc = get_chessdotcom_board_desc(soup)
             #print('Got board desc', board_desc)
             fen = chessdotcom_board_to_fen(board_desc, soup)
             #print(f'Current fen is: {fen}')
             best_move = str(engine_best_move(engine, fen))
-
             #print(f'Best move is {best_move}')
-            
             best_move_start_square = squares_dict[best_move[:4][:2]][-2:]
             best_move_destination_square = squares_dict[best_move[:4][2:]][-2:]
             if is_black_turn(soup): # board is flipped, so I need to adapt the coordinates that I pass to pyautogui.click()
                 best_move_start_square = str( 9 - int(best_move_start_square[0])) + str( 9 - int(best_move_start_square[1]))
                 best_move_destination_square = str( 9 - int(best_move_destination_square[0])) + str( 9 - int(best_move_destination_square[1]))
-
             pyautogui.click( 262 + 130*(int(best_move_start_square[0])-1) , 87 + 130*8 - 130*(int(best_move_start_square[1])) )
             pyautogui.click( 262 + 130*(int(best_move_destination_square[0])-1) , 87 + 130*8 - 130*(int(best_move_destination_square[1])) )
-            if len(best_move) > 4 :
+            if len(best_move) > 4 : # meaning the move is a promotion and thus ends with a piece symbol (ex: "d7d8q"). Thus I need to click on queen (I don't consider underpromotion yet)
                 pyautogui.click( 262 + 130*(int(best_move_destination_square[0])-1) , 87 + 130*8 - 130*(int(best_move_destination_square[1])) )
-            sleep(1)
-            #print('\nraw content is',raw_content)
-
-            # for item in raw_content:
-            #     if best_move_start_square in item:
-            #         startsquare = driver.find_element_by_class_name(item.replace(' ','.'))
-            #         startsquare.click()
-            #         break
-                
-            
-
-            # print('destination square is', best_move_destination_square)
-            # for item in raw_content:
-            #     if best_move_destination_square in item:
-            #         print(item)
-            #         try:
-            #             endsquare = driver.find_element_by_class_name('hint ' + best_move_destination_square)
-            #             endsquare.click()
-            #             break
-            #         except:
-            #             pass
-            # for item in raw_content:
-            #     if best_move_destination_square in item:
-            #         try:
-            #             endsquare = driver.find_element_by_class_name('capture-hint ' + best_move_destination_square)
-            #             endsquare.click()
-            #             break
-            #         except:
-            #             pass
-            # for item in raw_content:
-            #     if best_move_destination_square in item:
-            #         try:
-            #             endsquare = driver.find_element_by_class_name(item.replace(' ','.'))
-            #             endsquare.click()
-            #             break
-            #         except:
-            #             pass
+            sleep(1) # this one is crucial to avoid the error "engine process died unexpectedly (exit code: 3221225477)"
+            time_now = time()
+            time_elapsed = time_now - time_start
     except Exception as e:
         print(f'Error encountered: {e}')
+        driver.quit()
 
-sleep(15)
+sleep(5)
 now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 screenshot_name = f'scores_screenshots/{now}.png'
 driver.save_screenshot(screenshot_name)
-#driver.quit()
+driver.quit()
 

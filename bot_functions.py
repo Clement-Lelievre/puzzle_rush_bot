@@ -14,33 +14,28 @@ def get_squares_dict():
     l = list(squares_dict.values())
     return squares_dict, l
 
-squares_dict, l  = get_squares_dict()
-
+squares_dict, l = get_squares_dict()
 
 def get_chessdotcom_board_desc(soup):
     '''Scrapes the HTML content of the puzzle rush current page, and returns the board position (which pieces on which squares)'''
     chesscom_board_desc = []
-    raw_content = []
     for item in soup.find_all(id='board-board'):
         for stuff in item.find_all('div'):
             chesscom_board_desc.append(stuff['class'][1:])
-            raw_content.append(stuff['class'])
     for item in chesscom_board_desc:
         try:
             if 'square' in item[1]:
                 item.reverse()
         except:
             continue
-    raw_content = [' '.join(item) for item in raw_content if 'highlight' not in item and 'hover' not in item]
     board_desc = [item for item in chesscom_board_desc if len(item) == 2]
-    return board_desc, raw_content # the len() thing is because the highlighted squares from the last move appear even without pieces on it
+    return board_desc # the len() thing is because the highlighted squares from the last move appear even without pieces on it
     
 def is_black_turn(soup):
     try:
         return not not list(soup.find(class_ = 'board flipped'))
     except:
         return False
-
 
 def chessdotcom_board_to_fen(board_desc, soup):
     '''Receives a chess board description as is currently (May 2021) used by chess.com in the puzzle rush page HTML, 
