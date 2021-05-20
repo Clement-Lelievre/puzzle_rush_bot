@@ -29,7 +29,9 @@ There were several challenges, including:
 
 OS: Windows 10
 Launched via Powershell.
-There is still much room for improvement as this is only a first version. For example, using waittillelement...in selenium would be better than time.sleep().
+There is still much room for improvement as this is only a first version. 
+- for example, using WebDriverWait... in selenium would be better than time.sleep() as it i more robust
+- I noticed that my program is faster at making the first move of each challenge than the remaining moves and cannot understand why yet
 
 ## Files and directories
 
@@ -57,4 +59,4 @@ Please use this program responsibly and respect chess.com terms of use.
 
 ## Credits
 
-I obvisouly did not code a chess engine myself... Kudos to the Stockfish team.
+I obviously did not code a chess engine myself... Kudos to the Stockfish team.
