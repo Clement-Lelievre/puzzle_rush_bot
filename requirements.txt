@@ -1,0 +1,4 @@
+chess
+selenium
+beautifulsoup4
+pyautogui
