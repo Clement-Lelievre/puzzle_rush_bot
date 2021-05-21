@@ -20,8 +20,11 @@ import datetime
 "This Python file opens a browser (Firefox) page to chess.com's puzzle rush page, logs in and solves puzzles"
 
 # defining a few variables that'll be needed thereafter
-email = 'dsiudhusdhdsds64545@gmail.com'
-password = 'dkshdkjdshdjdhs' # TO DO: make it hidden
+
+with open('credentials.txt') as f:
+    content = f.readlines()
+creds = [line.strip() for line in content if not '#' in line]
+email, password = creds[0], creds[1]
 
 with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:  # initiating a chess engine (Stockfish 13)
     try:
@@ -108,14 +111,38 @@ with chess.engine.SimpleEngine.popen_uci("stockfish_13_win_x64_avx2") as engine:
         soup = BeautifulSoup(html, 'html.parser')
         time_now = time()
         time_elapsed = time_now - time_start
+        nbpuzzles = 0
         while time_elapsed < 305: # puzzle rush lasts 5 min so I took just beyond 5min*60sec. A cleaner, more robust way to loop would be to parse the HTML and detect the end of the rush
+            timebegin = time()
+            #WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "board-board")))
+            if len(soup.find_all(class_='streak-indicator-streak streak-indicator-incorrect streak-indicator-link')) + len(soup.find_all(class_='streak-indicator-streak streak-indicator-correct streak-indicator-link')) > nbpuzzles:
+                nbpuzzles += 1
+                print('NEW PUZZLE')
+
             html = driver.page_source
+            print('Took',time()-timebegin, ' to get html')
+            timebegin = time()
             soup = BeautifulSoup(html, 'html.parser')
+            print('Took',time()-timebegin, ' to parse html')
+
+            timebegin = time()
+            
             board_desc = get_chessdotcom_board_desc(soup)
+            print('Took',time()-timebegin, ' to get boarddesc')
+
             #print('Got board desc', board_desc)
+            timebegin = time()
+
             fen = chessdotcom_board_to_fen(board_desc, soup)
+            print('Took',time()-timebegin, ' to make the FEN: ', fen)
+
+            timebegin = time()
+
             #print(f'Current fen is: {fen}')
             best_move = str(engine_best_move(engine, fen))
+            print('Took',time()-timebegin, ' to get the best move\n')
+
+
             #print(f'Best move is {best_move}')
             best_move_start_square = squares_dict[best_move[:4][:2]][-2:]
             best_move_destination_square = squares_dict[best_move[:4][2:]][-2:]

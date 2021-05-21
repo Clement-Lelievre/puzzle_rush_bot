@@ -18,19 +18,25 @@ squares_dict, l = get_squares_dict()
 
 def get_chessdotcom_board_desc(soup):
     '''Scrapes the HTML content of the puzzle rush current page, and returns the board position (which pieces on which squares)'''
-    chesscom_board_desc = []
-    for item in soup.find_all(id='board-board'):
-        for stuff in item.find_all('div'):
-            chesscom_board_desc.append(stuff['class'][1:])
+    def fill_pieces(stuff):
+        return stuff['class'][1:]
+    
+    chesscom_board_desc = list(map(fill_pieces , [stuff for item in soup.find_all(id='board-board') for stuff in item.find_all('div')] ))
+    chesscom_board_desc = [item for item in chesscom_board_desc if len(item) == 2] # for some reason it won't let me do a one-liner list comprehension
+    # the len() thing is because the highlighted squares from the last move appear even without pieces on it, so I need to remove them
+    
+    #chesscom_board_desc = []
+    # for item in soup.find_all(id='board-board'):
+    #     for stuff in item.find_all('div'):
+    #         chesscom_board_desc.append(stuff['class'][1:])
     for item in chesscom_board_desc:
         try:
             if 'square' in item[1]:
-                item.reverse()
+                item.reverse() # this is performed in place (even on copies)
         except:
             continue
-    board_desc = [item for item in chesscom_board_desc if len(item) == 2]
-    return board_desc # the len() thing is because the highlighted squares from the last move appear even without pieces on it
-    
+    return chesscom_board_desc 
+
 def is_black_turn(soup):
     try:
         return not not list(soup.find(class_ = 'board flipped'))
@@ -50,7 +56,6 @@ def chessdotcom_board_to_fen(board_desc, soup):
         board.turn = True
     return board.fen()
    
-
 def engine_best_move(engine, fen, time = 0.1):
     '''input: a FEN / output: the best move in the position according to Stockfish 13's neural network under the given time constraint (in ms)'''
     board = chess.Board(fen)
