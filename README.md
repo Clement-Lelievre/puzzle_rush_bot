@@ -1,4 +1,7 @@
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 # My puzzle-rush bot
+
 ![](https://github.com/Clement-Lelievre/puzzle_rush_bot/blob/main/scores_screenshots/2021-05-19_12-56-23.png)   
 
 See video here: https://www.youtube.com/watch?v=nIjSTROF7PY
