@@ -34,8 +34,6 @@ There is still much room for improvement as this is only a first version.
 - for example, using WebDriverWait... in selenium would be better than time.sleep() as it i more robust
 - I noticed that my program is faster at making the first move of each challenge than the remaining moves and cannot understand why yet
 
-See video here: https://www.youtube.com/watch?v=nIjSTROF7PY
-
 ## Files and directories
 
 - The main file is obvisouly main.py => just run *python main.py*
