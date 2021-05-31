@@ -2,6 +2,8 @@
 
 # My puzzle-rush bot
 
+![Want to see the OOP version instead?](https://github.com/Clement-Lelievre/puzzle_rush_bot_OOP)
+
 ![](https://github.com/Clement-Lelievre/puzzle_rush_bot/blob/main/youtube-video-gif.gif)   
 
 ![](https://github.com/Clement-Lelievre/puzzle_rush_bot/blob/main/scores_screenshots/2021-05-19_12-56-23.png)   
